@@ -13,10 +13,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Shared\" />
+    <PackageReference Include="Radzen.Blazor" Version="3.6.8" />
   </ItemGroup>
 
 </Project>
