@@ -5,21 +5,19 @@ using System.Collections.Generic;
 
 namespace MoviesAspTest
 {
-    public partial class Movie
+    public partial class Actor
     {
-        public Movie()
+        public Actor()
         {
+            ActorLikes = new HashSet<ActorLike>();
             ActorParticipations = new HashSet<ActorParticipation>();
-            MovieLikes = new HashSet<MovieLike>();
         }
 
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public DateTime? ReleaseDate { get; set; }
-        public TimeSpan? Duration { get; set; }
 
+        public virtual ICollection<ActorLike> ActorLikes { get; set; }
         public virtual ICollection<ActorParticipation> ActorParticipations { get; set; }
-        public virtual ICollection<MovieLike> MovieLikes { get; set; }
     }
 }
