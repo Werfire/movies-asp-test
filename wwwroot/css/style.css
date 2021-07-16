@@ -1,1 +1,8 @@
-﻿
+﻿body {
+    background-color: #1d3f53
+}
+
+h1, p, span {
+    color: #ef8080;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}

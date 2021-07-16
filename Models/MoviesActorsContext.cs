@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace MoviesAspTest
 {
-    public partial class MoviesTestContext : DbContext
+    public partial class MoviesActorsContext : DbContext
     {
-        public MoviesTestContext()
+        public MoviesActorsContext()
         {
         }
 
-        public MoviesTestContext(DbContextOptions<MoviesTestContext> options)
+        public MoviesActorsContext(DbContextOptions<MoviesActorsContext> options)
             : base(options)
         {
         }
