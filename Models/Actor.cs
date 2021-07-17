@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace MoviesAspTest
+namespace MoviesAspTest.Models
 {
     public partial class Actor
     {

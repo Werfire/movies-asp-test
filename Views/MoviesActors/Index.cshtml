@@ -1,6 +1,6 @@
-﻿@{
-   
-}
+﻿@using MoviesAspTest.Models
+@using MoviesAspTest.ViewModels
+@model MoviesActorsViewModel
 
 <!DOCTYPE html>
 <html>
@@ -11,9 +11,31 @@
 </head>
 <body>
     <h1 style="text-align: center">Welcome to movies and actors hub!</h1>
-    <p>Choose action to proceed:</p>
-    @{ 
+    <h2>Choose action to proceed:</h2>
 
+    @Html.ActionLink("Show movies by name", "Index", "MoviesActors", new { _action = "get_movies_by_name" }, null)
+    @Html.ActionLink("Show movies by release date", "Index", "MoviesActors", new { _action = "get_movies_by_release_date" }, null)
+    @Html.ActionLink("Show movies by popularity", "Index", "MoviesActors", new { _action = "get_movies_by_likes" }, null)
+    @Html.ActionLink("Show actors by popularity", "Index", "MoviesActors", new { _action = "get_actors_by_likes" }, null)
+
+    @if (Model.actionName != null)
+    {
+        <p>@Model.actionDesc</p>
+    }
+
+    @{
+        if (Model.actionName == "get_movies_by_name" || Model.actionName == "get_movies_by_release_date" ||
+            Model.actionName == "get_movies_by_likes" || Model.actionName == "get_movies_with_actor")
+            foreach (Movie m in Model.moviesList)
+            {
+                <h3>@m.Name</h3>
+            }
+        else if (Model.actionName == "get_actors_by_likes")
+            foreach (Actor a in Model.actorsList)
+            {
+                <h3>@a.Name</h3>
+                @Html.ActionLink(string.Format("Show movies with {0}", a.Name), "Index", "MoviesActors", new { _action = "get_movies_with_actor" }, null);
+            }
     }
 </body>
 </html>

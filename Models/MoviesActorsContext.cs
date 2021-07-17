@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace MoviesAspTest
+namespace MoviesAspTest.Models
 {
     public partial class MoviesActorsContext : DbContext
     {
