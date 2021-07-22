@@ -9,9 +9,28 @@ namespace MoviesAspTest.Controllers
 {
 	public class SessionController : Controller
 	{
-		public ActionResult Index()
+		[HttpGet]
+		public ActionResult Login()
 		{
-			return View();
+			return View("Login");
+		}
+
+		[HttpPost]
+		public ActionResult Login(string login, string password)
+		{
+			return View("Login");
+		}
+
+		[HttpGet]
+		public ActionResult Register()
+		{
+			return View("Register");
+		}
+
+		[HttpPost]
+		public ActionResult Register(string login, string password)
+		{
+			return View("Register");
 		}
 	}
 }

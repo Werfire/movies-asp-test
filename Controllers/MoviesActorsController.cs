@@ -1,46 +1,49 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using MoviesAspTest.Enums;
 using MoviesAspTest.Models;
 using MoviesAspTest.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+
+namespace MoviesAspTest.Enums
+{
+	public enum MoviesActorsAction
+	{
+		None, GetMoviesByName, GetMoviesByReleaseDate, GetMoviesByLikes, GetActorsByLikes, GetMoviesWithActor
+	}
+}
 
 namespace MoviesAspTest.Controllers
 {
 	public class MoviesActorsController : Controller
 	{
-		public ViewResult Index(string _action = null, Actor actor = null)
+		public ViewResult Index(MoviesActorsAction _action = MoviesActorsAction.None, Actor actor = null)
 		{
 			MoviesActorsViewModel model = new MoviesActorsViewModel();
 			model.actionName = _action;
 
-			if (_action == "get_movies_by_name")
+			switch (_action)
 			{
-				model.moviesList = GetMoviesByName();
-				model.actionDesc = "Movies ordered by name:";
-			}
-			else if (_action == "get_movies_by_release_date")
-			{
-				model.moviesList = GetMoviesByReleaseDate();
-				model.actionDesc = "Movies ordered by release date:";
-			}
-			else if (_action == "get_movies_by_likes")
-			{
-				model.moviesList = GetMoviesByLikes();
-				model.actionDesc = "Movies ordered by popularity:";
-			}
-			else if (_action == "get_actors_by_likes")
-			{
-				model.actorsList = GetActorsByLikes();
-				model.actionDesc = "Actors ordered by popularity:";
-			}
-			else if (_action == "get_movies_with_actor")
-			{
-				model.moviesList = GetMoviesWithActor(actor);
-				model.actionDesc = string.Format("Movies starring {0}:", actor.Name);
+				case MoviesActorsAction.GetMoviesByName:
+					model.moviesList = GetMoviesByName();
+					model.actionDesc = "Movies ordered by name:";
+					break;
+				case MoviesActorsAction.GetMoviesByReleaseDate:
+					model.moviesList = GetMoviesByReleaseDate();
+					model.actionDesc = "Movies ordered by release date:";
+					break;
+				case MoviesActorsAction.GetMoviesByLikes:
+					model.moviesList = GetMoviesByLikes();
+					model.actionDesc = "Movies ordered by popularity:";
+					break;
+				case MoviesActorsAction.GetActorsByLikes:
+					model.actorsList = GetActorsByLikes();
+					model.actionDesc = "Actors ordered by popularity:";
+					break;
+				case MoviesActorsAction.GetMoviesWithActor:
+					model.moviesList = GetMoviesWithActor(actor);
+					model.actionDesc = string.Format("Movies starring {0}:", actor.Name);
+					break;
 			}
 
 			return View(model);
