@@ -1,0 +1,37 @@
+﻿@model RegisterViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register a new account</title>
+    <link rel="icon" href="~/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="~/css/style.css" type="text/css" />
+</head>
+<body>
+<h1>Provide details for your new account</h1>
+<form asp-controller="User" asp-action="Register" method="post">
+    <div asp-validation-summary="ModelOnly" class="validation"></div>
+    <div class="form-field">
+        <label asp-for="Login"></label>
+        <input asp-for="Login" />
+        <br />
+        <span class="validation" asp-validation-for="Login"></span>
+    </div>
+    <div class="form-field">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" />
+        <br />
+        <span class="validation" asp-validation-for="Password"></span>
+    </div>
+    <div class="form-field">
+        <label asp-for="ConfirmPassword"></label>
+        <input asp-for="ConfirmPassword" />
+        <br />
+        <span class="validation" asp-validation-for="ConfirmPassword"></span>
+    </div>
+    <p>
+        <button type="submit">Register</button>
+    </p>
+</form>
+</body>
+</html>

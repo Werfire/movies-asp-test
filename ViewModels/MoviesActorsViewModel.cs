@@ -1,17 +1,14 @@
 ﻿using MoviesAspTest.Enums;
 using MoviesAspTest.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MoviesAspTest.ViewModels
 {
 	public class MoviesActorsViewModel
 	{
-		public List<Movie> moviesList { get; set; }
-		public List<Actor> actorsList { get; set; }
-		public MoviesActorsAction actionName { get; set; }
-		public string actionDesc { get; set; }
+		public List<Movie> MoviesList { get; set; }
+		public List<Actor> ActorsList { get; set; }
+		public MoviesActorsAction ActionName { get; set; }
+		public string ActionDesc { get; set; }
 	}
 }

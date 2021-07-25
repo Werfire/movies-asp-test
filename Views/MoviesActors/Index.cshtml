@@ -1,5 +1,4 @@
 ﻿@using MoviesAspTest.Models
-@using MoviesAspTest.ViewModels
 @using MoviesAspTest.Enums
 @model MoviesActorsViewModel
 
@@ -11,32 +10,52 @@
     <link rel="stylesheet" href="~/css/style.css" type="text/css" />
 </head>
 <body>
-    <h1 style="text-align: center">Welcome to movies and actors hub!</h1>
-    <h2>Choose action to proceed:</h2>
-
-    @Html.ActionLink("Show movies by name", "Index", "MoviesActors", new { _action = MoviesActorsAction.GetMoviesByName }, null)
-    @Html.ActionLink("Show movies by release date", "Index", "MoviesActors", new { _action = MoviesActorsAction.GetMoviesByReleaseDate }, null)
-    @Html.ActionLink("Show movies by popularity", "Index", "MoviesActors", new { _action = MoviesActorsAction.GetMoviesByLikes }, null)
-    @Html.ActionLink("Show actors by popularity", "Index", "MoviesActors", new { _action = MoviesActorsAction.GetActorsByLikes }, null)
-
-    @if (Model.actionName != null)
-    {
-        <p>@Model.actionDesc</p>
-    }
-
+<div class="up-right">
     @{
-        if (Model.actionName == MoviesActorsAction.GetMoviesByName || Model.actionName == MoviesActorsAction.GetMoviesByReleaseDate ||
-            Model.actionName == MoviesActorsAction.GetMoviesByLikes || Model.actionName == MoviesActorsAction.GetMoviesWithActor)
-            foreach (Movie m in Model.moviesList)
-            {
-                <h3>@m.Name</h3>
-            }
-        else if (Model.actionName == MoviesActorsAction.GetActorsByLikes)
-            foreach (Actor a in Model.actorsList)
-            {
-                <h3>@a.Name</h3>
-                @Html.ActionLink(string.Format("Show movies with {0}", a.Name), "Index", "MoviesActors", new { _action = MoviesActorsAction.GetMoviesWithActor }, null)
-            }
+        if (User == null || !User.Identity.IsAuthenticated)
+        {
+            @Html.ActionLink("Sign in", "SignIn", "User")
+            <span>&nbsp;&nbsp;</span>
+            @Html.ActionLink("Register new account", "Register", "User")
+        }
+        else
+        {
+            <span>@User.Identity.Name&nbsp;&nbsp;</span>
+            @Html.ActionLink("Log out", "Logout", "User")
+        }
     }
+</div>
+
+<h1 style="text-align: center">Welcome to movies and actors hub!</h1>
+<h2>Choose action to proceed:</h2>
+
+@Html.ActionLink("Show movies by name", "Index", "MoviesActors", new {_action = MoviesActorsAction.GetMoviesByName}, new { @class="action-label" })
+@Html.ActionLink("Show movies by release date", "Index", "MoviesActors", new {_action = MoviesActorsAction.GetMoviesByReleaseDate}, new { @class = "action-label" })
+@Html.ActionLink("Show movies by popularity", "Index", "MoviesActors", new {_action = MoviesActorsAction.GetMoviesByLikes}, new { @class = "action-label" })
+@Html.ActionLink("Show actors by popularity", "Index", "MoviesActors", new {_action = MoviesActorsAction.GetActorsByLikes}, new { @class = "action-label" })
+
+@if (Model.ActionName == MoviesActorsAction.None)
+{
+    <p>@Model.ActionDesc</p>
+}
+
+@{
+    if (Model.ActionName is MoviesActorsAction.GetMoviesByName or MoviesActorsAction.GetMoviesByReleaseDate or 
+        MoviesActorsAction.GetMoviesByLikes or MoviesActorsAction.GetMoviesWithActor)
+    {
+        foreach (Movie m in Model.MoviesList)
+        {
+            <h3>@m.Name</h3>
+        }
+    }
+    else if (Model.ActionName == MoviesActorsAction.GetActorsByLikes)
+    {
+        foreach (Actor a in Model.ActorsList)
+        {
+            <h3>@a.Name</h3>
+            @Html.ActionLink($"Show movies with {a.Name}", "Index", "MoviesActors", new {_action = MoviesActorsAction.GetMoviesWithActor}, null)
+        }
+    }
+}
 </body>
 </html>
