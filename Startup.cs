@@ -1,4 +1,5 @@
-using System.Net;
+using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -22,10 +23,7 @@ namespace MoviesAspTest
 		{
 			services.AddControllersWithViews();
 			services.AddAuthentication("Cookie")
-				.AddCookie("Cookie", config =>
-				{
-					config.LoginPath = "/Session/SignIn";
-				});
+				.AddCookie("Cookie");
 			services.AddAuthorization();
 			services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 				{
@@ -34,6 +32,10 @@ namespace MoviesAspTest
 					options.Password.RequireNonAlphanumeric = false;
 				})
 				.AddEntityFrameworkStores<MoviesTestContext>();
+			services.PostConfigure<CookieAuthenticationOptions>(options =>
+				{
+					options.LoginPath = "/User/SignIn";
+				});
 
 			services.AddTransient<MoviesTestContext>();
 		}
