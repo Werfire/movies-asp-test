@@ -16,19 +16,17 @@
 </head>
 <body>
 <div class="up-right">
-    @{
-        if (User == null || !User.Identity.IsAuthenticated)
-        {
-            @Html.ActionLink("Sign in", "SignIn", "User")
-            <span>&nbsp;&nbsp;</span>
-            @Html.ActionLink("Register new account", "Register", "User")
-        }
-        else
-        {
-            <span>@User.Identity.Name&nbsp;&nbsp;</span>
-            @Html.ActionLink("Log out", "Logout", "User")
-        }
-    }
+    @if (User == null || !User.Identity.IsAuthenticated)
+{
+    @Html.ActionLink("Sign in", "SignIn", "User")
+    <span>&nbsp;&nbsp;</span>
+    @Html.ActionLink("Register new account", "Register", "User")
+}
+else
+{
+    <span>@User.Identity.Name&nbsp;&nbsp;</span>
+    @Html.ActionLink("Log out", "Logout", "User")
+}
 </div>
 
 <h1 style="text-align: center">Welcome to movies and actors hub!</h1>
@@ -39,37 +37,65 @@
 @Html.ActionLink("Show movies by popularity", "Index", "MoviesActors", new {_action = MoviesActorsAction.GetMoviesByLikes}, new { @class = "action-label" })
 @Html.ActionLink("Show actors by popularity", "Index", "MoviesActors", new {_action = MoviesActorsAction.GetActorsByLikes}, new { @class = "action-label" })
 
-@if (Model.ActionName == MoviesActorsAction.None)
+@if (Model.ActionName != MoviesActorsAction.None)
 {
-    <p>@Model.ActionDesc</p>
+    <h1>@Model.ActionDesc</h1>
 }
 
-@{
-    if (Model.ActionName is MoviesActorsAction.GetMoviesByName or MoviesActorsAction.GetMoviesByReleaseDate or 
-        MoviesActorsAction.GetMoviesByLikes or MoviesActorsAction.GetMoviesWithActor)
-    {
-        foreach (Movie m in Model.MoviesList)
-        {
-            <div>
-            <h3 style="display: inline-block">@m.Name</h3>
-            @Html.ActionLink("More info", "Index", "MoviesActors", new { _action = MoviesActorsAction.GetMovieInfo, movieId = m.Id }, new { @class = "action-label" })
-            @*var userName = User.Identity.Name;
-            string likeText;
-            if (userName == null || )
-                likeText = UnlikedText;*@
 
-            @Html.ActionLink(UnlikedText, "LikeMovie", "MoviesActors", new { movieId = m.Id, model = Model }, new { @class = "action-label" })
-            </div>
-        }
-    }
-    else if (Model.ActionName == MoviesActorsAction.GetActorsByLikes)
+@if (Model.ActionName is MoviesActorsAction.GetMoviesByName or MoviesActorsAction.GetMoviesByReleaseDate or 
+    MoviesActorsAction.GetMoviesByLikes or MoviesActorsAction.GetMoviesWithActor)
+{
+    foreach (Movie m in Model.MoviesList)
     {
-        foreach (Actor a in Model.ActorsList)
-        {
-            <h3>@a.Name</h3>
-            @Html.ActionLink($"Show movies with {a.Name}", "Index", "MoviesActors", new {_action = MoviesActorsAction.GetMoviesWithActor}, null)
-        }
+<div>
+<h3 style="display: inline-block">@m.Name</h3>
+@Html.ActionLink("More info", "Index", "MoviesActors", new { _action = MoviesActorsAction.GetMovieInfo, movieId = m.Id }, new { @class = "action-label" })
+@if(!Model.LikedMoviesIds.Contains(m.Id))
+{
+    @Html.ActionLink(UnlikedText, "LikeMovie", "MoviesActors", new {movieId = m.Id}, new {@class = "action-label"})
+}
+else
+{
+    @Html.ActionLink(LikedText, "UnlikeMovie", "MoviesActors", new {movieId = m.Id}, new {@class = "action-label"})
+}
+</div>
     }
 }
+else if (Model.ActionName == MoviesActorsAction.GetMovieInfo)
+{
+    <p>Description: @Model.MoviesList[0].Description</p>
+    <p>Release date: @Model.MoviesList[0].ReleaseDate</p>
+    <p>Duration: @Model.MoviesList[0].Duration</p>
+    <p>Number of actors: @Model.MoviesList[0].ActorParticipations.Count</p>
+    <p>Number of likes: @Model.MoviesList[0].MovieLikes.Count</p>
+}
+else if (Model.ActionName == MoviesActorsAction.GetActorInfo)
+{
+    <p>Description: @Model.ActorsList[0].Description</p>
+    <p>Number of movie participations: @Model.ActorsList[0].ActorParticipations.Count</p>
+    <p>Number of likes: @Model.ActorsList[0].ActorLikes.Count</p>
+}
+else if (Model.ActionName == MoviesActorsAction.GetActorsByLikes)
+{
+    foreach (Actor a in Model.ActorsList)
+    {
+<div>
+    <h3 style="display: inline-block">@a.Name</h3>
+    @Html.ActionLink("More info", "Index", "MoviesActors", new { _action = MoviesActorsAction.GetActorInfo, actorId = a.Id }, new { @class = "action-label" })
+    @Html.ActionLink($"Show movies with {a.Name}", "Index", "MoviesActors", new { _action = MoviesActorsAction.GetMoviesWithActor, actorId = a.Id },
+        new { @class = "action-label" })
+    @if (!Model.LikedActorsIds.Contains(a.Id))
+    {
+        @Html.ActionLink(UnlikedText, "LikeActor", "MoviesActors", new { actorId = a.Id }, new { @class = "action-label" })
+    }
+    else
+    {
+        @Html.ActionLink(LikedText, "UnlikeActor", "MoviesActors", new { actorId = a.Id }, new { @class = "action-label" })
+    }
+</div>
+    }
+}
+
 </body>
 </html>

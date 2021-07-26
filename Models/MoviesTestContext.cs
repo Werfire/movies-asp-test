@@ -44,7 +44,7 @@ namespace MoviesAspTest.Models
             {
 	            entity.ToTable("Actor");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+	            entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Description)
                     .HasMaxLength(512)

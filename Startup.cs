@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,14 +29,15 @@ namespace MoviesAspTest
 			services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 				{
 					options.Password.RequireDigit = false;
+					options.Password.RequireLowercase = false;
 					options.Password.RequireUppercase = false;
 					options.Password.RequireNonAlphanumeric = false;
 				})
 				.AddEntityFrameworkStores<MoviesTestContext>();
-			services.PostConfigure<CookieAuthenticationOptions>(options =>
-				{
-					options.LoginPath = "/User/SignIn";
-				});
+			services.ConfigureApplicationCookie(options =>
+			{
+				options.LoginPath = new PathString("/User/SignIn");
+			});
 
 			services.AddTransient<MoviesTestContext>();
 		}
@@ -62,7 +64,7 @@ namespace MoviesAspTest
 			{
 				endpoints.MapControllerRoute(
 					name: "default",
-					pattern: "{controller=MoviesActors}/{action=Index}");
+					pattern: "{controller=MoviesActors}/{action=Index}/{id?}");
 			});
 		}
 	}

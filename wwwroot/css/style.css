@@ -18,8 +18,7 @@ a:active {
 }
 
 .action-label {
-    margin-left: 1em;
-    margin-right: 1em;
+    margin: 0 1em
 }
 
 .validation {
@@ -27,8 +26,7 @@ a:active {
 }
 
 .form-field {
-    margin-top: 1em;
-    margin-bottom: 1em;
+    margin: 1em 0;
 }
 
 .up-right {
