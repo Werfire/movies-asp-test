@@ -1,6 +1,12 @@
 ﻿@using MoviesAspTest.Models
 @using MoviesAspTest.Enums
+@using System.Security.Claims
 @model MoviesActorsViewModel
+
+@{
+    const string UnlikedText = "🤍";
+    const string LikedText = "💚";
+}
 
 <!DOCTYPE html>
 <html>
@@ -45,7 +51,16 @@
     {
         foreach (Movie m in Model.MoviesList)
         {
-            <h3>@m.Name</h3>
+            <div>
+            <h3 style="display: inline-block">@m.Name</h3>
+            @Html.ActionLink("More info", "Index", "MoviesActors", new { _action = MoviesActorsAction.GetMovieInfo, movieId = m.Id }, new { @class = "action-label" })
+            @*var userName = User.Identity.Name;
+            string likeText;
+            if (userName == null || )
+                likeText = UnlikedText;*@
+
+            @Html.ActionLink(UnlikedText, "LikeMovie", "MoviesActors", new { movieId = m.Id, model = Model }, new { @class = "action-label" })
+            </div>
         }
     }
     else if (Model.ActionName == MoviesActorsAction.GetActorsByLikes)

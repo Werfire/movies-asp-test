@@ -7,42 +7,7 @@ namespace MoviesAspTest.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DeleteData(
-                table: "Movie",
-                keyColumn: "Id",
-                keyValue: new Guid("0484c6b2-799c-41e0-a8a2-23ab0f739d4f"));
-
-            migrationBuilder.DeleteData(
-                table: "Movie",
-                keyColumn: "Id",
-                keyValue: new Guid("07e87fb1-656f-4328-bf88-4600d1a4b299"));
-
-            migrationBuilder.DeleteData(
-                table: "Movie",
-                keyColumn: "Id",
-                keyValue: new Guid("1710f25c-fe35-4612-b73b-be17fc5af122"));
-
-            migrationBuilder.DeleteData(
-                table: "Movie",
-                keyColumn: "Id",
-                keyValue: new Guid("8aff3bb4-8822-410b-9046-d938c3aa9a70"));
-
-            migrationBuilder.DeleteData(
-                table: "Movie",
-                keyColumn: "Id",
-                keyValue: new Guid("c70d343b-23b9-4fe0-9a57-d254ab08f533"));
-
-            migrationBuilder.DeleteData(
-                table: "Movie",
-                keyColumn: "Id",
-                keyValue: new Guid("cafd141a-b828-4cbe-a98e-49bcf67042e3"));
-
-            migrationBuilder.DeleteData(
-                table: "Movie",
-                keyColumn: "Id",
-                keyValue: new Guid("f11ef9e6-afdb-4485-8905-c351cb33dfc2"));
-
-            migrationBuilder.CreateTable(
+	        migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -187,20 +152,6 @@ namespace MoviesAspTest.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Movie",
-                columns: new[] { "Id", "Description", "Duration", "Name", "ReleaseDate" },
-                values: new object[,]
-                {
-                    { new Guid("bd6ef8d1-575c-4b3f-89bb-aec375f728c7"), "Epic science fiction film co-written, directed and produced by Christopher Nolan.", new TimeSpan(0, 2, 49, 0, 0), "Interstellar", new DateTime(2014, 10, 26, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("43309611-e9df-44b3-ab13-a57a57e8bbd7"), "American action film directed by Justin Lin from a screenplay by Daniel Casey and Lin.", new TimeSpan(0, 2, 23, 0, 0), "Fast & Furious 9", new DateTime(2021, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("f216899e-c14a-4ce3-8e7d-f1208186d09b"), "Russian comedy film, sequel to Yolki.", new TimeSpan(0, 1, 40, 0, 0), "Yolki 2", new DateTime(2011, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("9a11d99b-9670-4fff-b74b-8287fe78d13c"), "American science fantasy Western action film directed and co-written by Nikolaj Arcel.", new TimeSpan(0, 1, 35, 0, 0), "The Dark Tower", new DateTime(2017, 7, 31, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("58449f5b-8438-43e2-b391-41137b1ad808"), "American computer-animated comedy film loosely based on the 1990 picture book Shrek! by William Steig.", new TimeSpan(0, 1, 32, 0, 0), "Shrek 2", new DateTime(2004, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("7df6df7f-5e03-4306-87c1-4fb30c03d097"), "Russian comedy film. It is a prequel to the 2013 film Yolki 3.", new TimeSpan(0, 1, 49, 0, 0), "Yolki 1914", new DateTime(2014, 12, 25, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("356652fb-a40c-4333-885f-f0073ee5edbc"), "American epic space-opera film written and directed by George Lucas, produced by Lucasfilm and distributed by 20th Century Fox.", new TimeSpan(0, 2, 1, 0, 0), "Star Wars IV", new DateTime(1977, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified) }
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -263,55 +214,6 @@ namespace MoviesAspTest.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DeleteData(
-                table: "Movie",
-                keyColumn: "Id",
-                keyValue: new Guid("356652fb-a40c-4333-885f-f0073ee5edbc"));
-
-            migrationBuilder.DeleteData(
-                table: "Movie",
-                keyColumn: "Id",
-                keyValue: new Guid("43309611-e9df-44b3-ab13-a57a57e8bbd7"));
-
-            migrationBuilder.DeleteData(
-                table: "Movie",
-                keyColumn: "Id",
-                keyValue: new Guid("58449f5b-8438-43e2-b391-41137b1ad808"));
-
-            migrationBuilder.DeleteData(
-                table: "Movie",
-                keyColumn: "Id",
-                keyValue: new Guid("7df6df7f-5e03-4306-87c1-4fb30c03d097"));
-
-            migrationBuilder.DeleteData(
-                table: "Movie",
-                keyColumn: "Id",
-                keyValue: new Guid("9a11d99b-9670-4fff-b74b-8287fe78d13c"));
-
-            migrationBuilder.DeleteData(
-                table: "Movie",
-                keyColumn: "Id",
-                keyValue: new Guid("bd6ef8d1-575c-4b3f-89bb-aec375f728c7"));
-
-            migrationBuilder.DeleteData(
-                table: "Movie",
-                keyColumn: "Id",
-                keyValue: new Guid("f216899e-c14a-4ce3-8e7d-f1208186d09b"));
-
-            migrationBuilder.InsertData(
-                table: "Movie",
-                columns: new[] { "Id", "Description", "Duration", "Name", "ReleaseDate" },
-                values: new object[,]
-                {
-                    { new Guid("8aff3bb4-8822-410b-9046-d938c3aa9a70"), "Epic science fiction film co-written, directed and produced by Christopher Nolan.", new TimeSpan(0, 2, 49, 0, 0), "Interstellar", new DateTime(2014, 10, 26, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("cafd141a-b828-4cbe-a98e-49bcf67042e3"), "American action film directed by Justin Lin from a screenplay by Daniel Casey and Lin.", new TimeSpan(0, 2, 23, 0, 0), "Fast & Furious 9", new DateTime(2021, 5, 19, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("07e87fb1-656f-4328-bf88-4600d1a4b299"), "Russian comedy film, sequel to Yolki.", new TimeSpan(0, 1, 40, 0, 0), "Yolki 2", new DateTime(2011, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("1710f25c-fe35-4612-b73b-be17fc5af122"), "American science fantasy Western action film directed and co-written by Nikolaj Arcel.", new TimeSpan(0, 1, 35, 0, 0), "The Dark Tower", new DateTime(2017, 7, 31, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("c70d343b-23b9-4fe0-9a57-d254ab08f533"), "American computer-animated comedy film loosely based on the 1990 picture book Shrek! by William Steig.", new TimeSpan(0, 1, 32, 0, 0), "Shrek 2", new DateTime(2004, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("0484c6b2-799c-41e0-a8a2-23ab0f739d4f"), "Russian comedy film. It is a prequel to the 2013 film Yolki 3.", new TimeSpan(0, 1, 49, 0, 0), "Yolki 1914", new DateTime(2014, 12, 25, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { new Guid("f11ef9e6-afdb-4485-8905-c351cb33dfc2"), "American epic space-opera film written and directed by George Lucas, produced by Lucasfilm and distributed by 20th Century Fox.", new TimeSpan(0, 2, 1, 0, 0), "Star Wars IV", new DateTime(1977, 5, 25, 0, 0, 0, 0, DateTimeKind.Unspecified) }
-                });
         }
     }
 }

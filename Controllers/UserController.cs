@@ -1,16 +1,17 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MoviesAspTest.Models;
 using MoviesAspTest.ViewModels;
 
 namespace MoviesAspTest.Controllers
 {
 	public class UserController : Controller
 	{
-		private readonly UserManager<IdentityUser> userManager;
-		private readonly SignInManager<IdentityUser> signInManager;
+		private readonly UserManager<ApplicationUser> userManager;
+		private readonly SignInManager<ApplicationUser> signInManager;
 
-		public UserController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+		public UserController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
 		{
 			this.userManager = userManager;
 			this.signInManager = signInManager;
@@ -28,11 +29,9 @@ namespace MoviesAspTest.Controllers
 			if (!ModelState.IsValid)
 				return View(model);
 
-			var user = await userManager.FindByNameAsync(model.Login);
+			var result = await signInManager.PasswordSignInAsync(model.Login, model.Password, model.RememberMe, false);
 
-			if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
-				await signInManager.SignInAsync(user, model.RememberMe);
-			else
+			if(!result.Succeeded)
 			{
 				ModelState.AddModelError("", "Wrong login or password.");
 				return View(model);
@@ -59,7 +58,7 @@ namespace MoviesAspTest.Controllers
 			if (!ModelState.IsValid)
 				return View(model);
 
-			var user = new IdentityUser
+			var user = new ApplicationUser()
 			{
 				UserName = model.Login,
 			};

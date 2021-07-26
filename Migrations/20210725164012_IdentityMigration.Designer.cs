@@ -9,7 +9,7 @@ using MoviesAspTest.Models;
 
 namespace MoviesAspTest.Migrations
 {
-    [DbContext(typeof(MoviesActorsContext))]
+    [DbContext(typeof(MoviesTestContext))]
     [Migration("20210725164012_IdentityUserMigration")]
     partial class IdentityMigration
     {

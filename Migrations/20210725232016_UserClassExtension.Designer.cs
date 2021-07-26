@@ -9,9 +9,9 @@ using MoviesAspTest.Models;
 
 namespace MoviesAspTest.Migrations
 {
-    [DbContext(typeof(MoviesActorsContext))]
-    [Migration("20210724233242_SeedMovieData")]
-    partial class SeedMovieData
+    [DbContext(typeof(MoviesTestContext))]
+    [Migration("20210725232016_UserClassExtension")]
+    partial class UserClassExtension
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,6 +21,137 @@ namespace MoviesAspTest.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens");
+                });
 
             modelBuilder.Entity("MoviesAspTest.Models.Actor", b =>
                 {
@@ -52,9 +183,14 @@ namespace MoviesAspTest.Migrations
                     b.Property<Guid>("ActorId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("UserId", "ActorId");
 
                     b.HasIndex("ActorId");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("ActorLike");
                 });
@@ -72,6 +208,71 @@ namespace MoviesAspTest.Migrations
                     b.HasIndex("ActorId");
 
                     b.ToTable("ActorParticipation");
+                });
+
+            modelBuilder.Entity("MoviesAspTest.Models.ApplicationUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("MoviesAspTest.Models.Genre", b =>
@@ -120,7 +321,7 @@ namespace MoviesAspTest.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("8aff3bb4-8822-410b-9046-d938c3aa9a70"),
+                            Id = new Guid("abd0bb12-c5e3-44ce-8d43-e41cde33e9f1"),
                             Description = "Epic science fiction film co-written, directed and produced by Christopher Nolan.",
                             Duration = new TimeSpan(0, 2, 49, 0, 0),
                             Name = "Interstellar",
@@ -128,7 +329,7 @@ namespace MoviesAspTest.Migrations
                         },
                         new
                         {
-                            Id = new Guid("cafd141a-b828-4cbe-a98e-49bcf67042e3"),
+                            Id = new Guid("b8e8a660-35d9-46f3-a506-9a27332b9bd4"),
                             Description = "American action film directed by Justin Lin from a screenplay by Daniel Casey and Lin.",
                             Duration = new TimeSpan(0, 2, 23, 0, 0),
                             Name = "Fast & Furious 9",
@@ -136,7 +337,7 @@ namespace MoviesAspTest.Migrations
                         },
                         new
                         {
-                            Id = new Guid("07e87fb1-656f-4328-bf88-4600d1a4b299"),
+                            Id = new Guid("d8e92340-8d65-4b38-a39f-c55c43eaf41e"),
                             Description = "Russian comedy film, sequel to Yolki.",
                             Duration = new TimeSpan(0, 1, 40, 0, 0),
                             Name = "Yolki 2",
@@ -144,7 +345,7 @@ namespace MoviesAspTest.Migrations
                         },
                         new
                         {
-                            Id = new Guid("1710f25c-fe35-4612-b73b-be17fc5af122"),
+                            Id = new Guid("3e021d1e-a7b2-41ae-a48b-b4ff2a827ea2"),
                             Description = "American science fantasy Western action film directed and co-written by Nikolaj Arcel.",
                             Duration = new TimeSpan(0, 1, 35, 0, 0),
                             Name = "The Dark Tower",
@@ -152,7 +353,7 @@ namespace MoviesAspTest.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c70d343b-23b9-4fe0-9a57-d254ab08f533"),
+                            Id = new Guid("c1f719a4-8e58-4977-ba86-2963120e8476"),
                             Description = "American computer-animated comedy film loosely based on the 1990 picture book Shrek! by William Steig.",
                             Duration = new TimeSpan(0, 1, 32, 0, 0),
                             Name = "Shrek 2",
@@ -160,7 +361,7 @@ namespace MoviesAspTest.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0484c6b2-799c-41e0-a8a2-23ab0f739d4f"),
+                            Id = new Guid("87cae8cb-eedc-431f-9f98-01670bc0b700"),
                             Description = "Russian comedy film. It is a prequel to the 2013 film Yolki 3.",
                             Duration = new TimeSpan(0, 1, 49, 0, 0),
                             Name = "Yolki 1914",
@@ -168,7 +369,7 @@ namespace MoviesAspTest.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f11ef9e6-afdb-4485-8905-c351cb33dfc2"),
+                            Id = new Guid("56d06a9b-195f-4693-aa95-081e75495c47"),
                             Description = "American epic space-opera film written and directed by George Lucas, produced by Lucasfilm and distributed by 20th Century Fox.",
                             Duration = new TimeSpan(0, 2, 1, 0, 0),
                             Name = "Star Wars IV",
@@ -197,7 +398,12 @@ namespace MoviesAspTest.Migrations
                     b.Property<Guid>("MovieId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("UserId", "MovieId");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("MovieId");
 
@@ -207,21 +413,69 @@ namespace MoviesAspTest.Migrations
             modelBuilder.Entity("MoviesAspTest.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Login")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("MoviesAspTest.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("MoviesAspTest.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MoviesAspTest.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("MoviesAspTest.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MoviesAspTest.Models.ActorLike", b =>
@@ -231,6 +485,10 @@ namespace MoviesAspTest.Migrations
                         .HasForeignKey("ActorId")
                         .HasConstraintName("FK_ActorLike_Actor")
                         .IsRequired();
+
+                    b.HasOne("MoviesAspTest.Models.ApplicationUser", null)
+                        .WithMany("ActorLikes")
+                        .HasForeignKey("ApplicationUserId");
 
                     b.HasOne("MoviesAspTest.Models.User", "User")
                         .WithMany("ActorLikes")
@@ -264,6 +522,10 @@ namespace MoviesAspTest.Migrations
 
             modelBuilder.Entity("MoviesAspTest.Models.MovieLike", b =>
                 {
+                    b.HasOne("MoviesAspTest.Models.ApplicationUser", null)
+                        .WithMany("MovieLikes")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("MoviesAspTest.Models.Movie", "Movie")
                         .WithMany("MovieLikes")
                         .HasForeignKey("MovieId")
@@ -286,6 +548,13 @@ namespace MoviesAspTest.Migrations
                     b.Navigation("ActorLikes");
 
                     b.Navigation("ActorParticipations");
+                });
+
+            modelBuilder.Entity("MoviesAspTest.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("ActorLikes");
+
+                    b.Navigation("MovieLikes");
                 });
 
             modelBuilder.Entity("MoviesAspTest.Models.Movie", b =>

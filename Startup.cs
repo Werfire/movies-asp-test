@@ -27,15 +27,15 @@ namespace MoviesAspTest
 					config.LoginPath = "/Session/SignIn";
 				});
 			services.AddAuthorization();
-			services.AddIdentity<IdentityUser, IdentityRole>(options =>
+			services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 				{
 					options.Password.RequireDigit = false;
 					options.Password.RequireUppercase = false;
 					options.Password.RequireNonAlphanumeric = false;
 				})
-				.AddEntityFrameworkStores<MoviesActorsContext>();
+				.AddEntityFrameworkStores<MoviesTestContext>();
 
-			services.AddTransient<MoviesActorsContext>();
+			services.AddTransient<MoviesTestContext>();
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

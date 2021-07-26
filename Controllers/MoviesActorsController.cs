@@ -1,16 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAspTest.Enums;
 using MoviesAspTest.Models;
 using MoviesAspTest.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace MoviesAspTest.Enums
 {
 	public enum MoviesActorsAction
 	{
-		None, GetMoviesByName, GetMoviesByReleaseDate, GetMoviesByLikes, GetActorsByLikes, GetMoviesWithActor
+		None, GetMoviesByName, GetMoviesByReleaseDate, GetMoviesByLikes, GetActorsByLikes, GetMoviesWithActor, 
+		GetMovieInfo, GetActorInfo
 	}
 }
 
@@ -18,7 +21,7 @@ namespace MoviesAspTest.Controllers
 {
 	public class MoviesActorsController : Controller
 	{
-		public ViewResult Index(MoviesActorsAction _action = MoviesActorsAction.None, Actor actor = null)
+		public ActionResult Index(MoviesActorsAction _action = MoviesActorsAction.None, Guid movieId = new(), Guid actorId = new())
 		{
 			MoviesActorsViewModel model = new MoviesActorsViewModel {ActionName = _action};
 			
@@ -41,8 +44,18 @@ namespace MoviesAspTest.Controllers
 					model.ActionDesc = "Actors ordered by popularity:";
 					break;
 				case MoviesActorsAction.GetMoviesWithActor:
-					model.MoviesList = GetMoviesWithActor(actor);
-					model.ActionDesc = $"Movies starring {actor.Name}:";
+					model.MoviesList = GetMoviesWithActor(actorId);
+					model.ActionDesc = $"Movies starring {GetActor(actorId).Name}:";
+					break;
+				case MoviesActorsAction.GetMovieInfo:
+					Movie movie = GetMovie(movieId);
+					model.MoviesList = new List<Movie> {movie};
+					model.ActionDesc = movie.Name + ":";
+					break;
+				case MoviesActorsAction.GetActorInfo:
+					Actor actor = GetActor(actorId);
+					model.ActorsList = new List<Actor> {actor};
+					model.ActionDesc = actor.Name + ":";
 					break;
 			}
 
@@ -50,14 +63,40 @@ namespace MoviesAspTest.Controllers
 		}
 
 		[Authorize]
-		public ActionResult Like()
+		public ActionResult LikeMovie(Guid movieId)
 		{
-			return View("Index");
+			using (MoviesTestContext db = new MoviesTestContext())
+			{
+				db.MovieLikes.Add(new MovieLike
+				{
+					UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+					MovieId = movieId
+				});
+				db.SaveChanges();
+			}
+
+			return View("Index", new MoviesActorsViewModel());
+		}
+
+		[Authorize]
+		public ActionResult LikeActor(Guid actorId)
+		{
+			using (MoviesTestContext db = new MoviesTestContext())
+			{
+				db.ActorLikes.Add(new ActorLike
+				{
+					UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+					ActorId = actorId
+				});
+				db.SaveChanges();
+			}
+
+			return View("Index", new MoviesActorsViewModel());
 		}
 
 		private List<Movie> GetMoviesByName()
 		{
-			using (MoviesActorsContext db = new MoviesActorsContext())
+			using (MoviesTestContext db = new MoviesTestContext())
 			{
 				return db.Movies.OrderBy(m => m.Name).ToList();
 			}
@@ -65,7 +104,7 @@ namespace MoviesAspTest.Controllers
 
 		private List<Movie> GetMoviesByReleaseDate()
 		{
-			using (MoviesActorsContext db = new MoviesActorsContext())
+			using (MoviesTestContext db = new MoviesTestContext())
 			{
 				return db.Movies.OrderByDescending(m => m.ReleaseDate).ToList();
 			}
@@ -73,7 +112,7 @@ namespace MoviesAspTest.Controllers
 
 		private List<Movie> GetMoviesByLikes()
 		{
-			using (MoviesActorsContext db = new MoviesActorsContext())
+			using (MoviesTestContext db = new MoviesTestContext())
 			{
 				return db.Movies.OrderByDescending(m => m.MovieLikes.Count).ToList();
 			}
@@ -81,38 +120,34 @@ namespace MoviesAspTest.Controllers
 
 		private List<Actor> GetActorsByLikes()
 		{
-			using (MoviesActorsContext db = new MoviesActorsContext())
+			using (MoviesTestContext db = new MoviesTestContext())
 			{
 				return db.Actors.OrderByDescending(a => a.ActorLikes.Count).ToList();
 			}
 		}
 
-		private List<Movie> GetMoviesWithActor(Actor actor)
+		private List<Movie> GetMoviesWithActor(Guid actorId)
 		{
-			using (MoviesActorsContext db = new MoviesActorsContext())
+			using (MoviesTestContext db = new MoviesTestContext())
 			{
-				return db.Movies.Where(m => m.ActorParticipations.Any(ap => ap.ActorId == actor.Id)).ToList();
+				return db.Movies.Where(m => m.ActorParticipations.Any(ap => ap.ActorId == actorId)).ToList();
 			}
 		}
 
-		private void LikeMovie(Movie movie)
+		private Movie GetMovie(Guid movieId)
 		{
-
+			using (MoviesTestContext db = new MoviesTestContext())
+			{
+				return db.Movies.First(m => m.Id == movieId);
+			}
 		}
 
-		private void UnlikeMovie(Movie movie)
+		private Actor GetActor(Guid actorId)
 		{
-
-		}
-
-		private void LikeActor(Actor actor)
-		{
-
-		}
-
-		private void UnlikeActor(Actor actor)
-		{
-
+			using (MoviesTestContext db = new MoviesTestContext())
+			{
+				return db.Actors.First(a => a.Id == actorId);
+			}
 		}
 	}
 }
