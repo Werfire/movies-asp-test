@@ -50,31 +50,35 @@ else
     {
 <div>
 <h3 style="display: inline-block">@m.Name</h3>
-@Html.ActionLink("More info", "Index", "MoviesActors", new { _action = MoviesActorsAction.GetMovieInfo, movieId = m.Id }, new { @class = "action-label" })
-@if(!Model.LikedMoviesIds.Contains(m.Id))
-{
-    @Html.ActionLink(UnlikedText, "LikeMovie", "MoviesActors", new {movieId = m.Id}, new {@class = "action-label"})
-}
-else
-{
-    @Html.ActionLink(LikedText, "UnlikeMovie", "MoviesActors", new {movieId = m.Id}, new {@class = "action-label"})
-}
+    @Html.ActionLink("More info", "Index", "MoviesActors", new { _action = MoviesActorsAction.GetMovieInfo, movieId = m.Id }, new { @class = "action-label" })
+    <div class="action-label">
+        @if (!Model.LikedMoviesIds.Contains(m.Id))
+        {
+            @Html.ActionLink(UnlikedText, "LikeMovie", "MoviesActors", new { movieId = m.Id }, null)
+        }
+        else
+        {
+            @Html.ActionLink(LikedText, "UnlikeMovie", "MoviesActors", new { movieId = m.Id }, null)
+        }
+        <span>@m.UsersLiked.Count</span>
+    </div>
 </div>
     }
 }
 else if (Model.ActionName == MoviesActorsAction.GetMovieInfo)
 {
+    string genreNames = string.Join(", ", Model.MoviesList[0].Genres.Select(g => g.Name));
+
     <p>Description: @Model.MoviesList[0].Description</p>
-    <p>Release date: @Model.MoviesList[0].ReleaseDate</p>
+    <p>Genres:  @genreNames</p>
+    <p> Release date: @Model.MoviesList[0].ReleaseDate</p>
     <p>Duration: @Model.MoviesList[0].Duration</p>
-    <p>Number of actors: @Model.MoviesList[0].ActorParticipations.Count</p>
-    <p>Number of likes: @Model.MoviesList[0].MovieLikes.Count</p>
+    <p>Number of actors: @Model.MoviesList[0].Actors.Count</p>
 }
 else if (Model.ActionName == MoviesActorsAction.GetActorInfo)
 {
     <p>Description: @Model.ActorsList[0].Description</p>
-    <p>Number of movie participations: @Model.ActorsList[0].ActorParticipations.Count</p>
-    <p>Number of likes: @Model.ActorsList[0].ActorLikes.Count</p>
+    <p>Number of movie participations: @Model.ActorsList[0].Movies.Count</p>
 }
 else if (Model.ActionName == MoviesActorsAction.GetActorsByLikes)
 {
@@ -85,14 +89,17 @@ else if (Model.ActionName == MoviesActorsAction.GetActorsByLikes)
     @Html.ActionLink("More info", "Index", "MoviesActors", new { _action = MoviesActorsAction.GetActorInfo, actorId = a.Id }, new { @class = "action-label" })
     @Html.ActionLink($"Show movies with {a.Name}", "Index", "MoviesActors", new { _action = MoviesActorsAction.GetMoviesWithActor, actorId = a.Id },
         new { @class = "action-label" })
-    @if (!Model.LikedActorsIds.Contains(a.Id))
-    {
-        @Html.ActionLink(UnlikedText, "LikeActor", "MoviesActors", new { actorId = a.Id }, new { @class = "action-label" })
-    }
-    else
-    {
-        @Html.ActionLink(LikedText, "UnlikeActor", "MoviesActors", new { actorId = a.Id }, new { @class = "action-label" })
-    }
+    <div class="action-label">
+        @if (!Model.LikedActorsIds.Contains(a.Id))
+        {
+            @Html.ActionLink(UnlikedText, "LikeActor", "MoviesActors", new { actorId = a.Id }, null)
+        }
+        else
+        {
+            @Html.ActionLink(LikedText, "UnlikeActor", "MoviesActors", new { actorId = a.Id }, null)
+        }
+        <span>@a.UsersLiked.Count</span>
+    </div>
 </div>
     }
 }

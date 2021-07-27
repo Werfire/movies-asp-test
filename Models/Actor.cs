@@ -9,15 +9,15 @@ namespace MoviesAspTest.Models
     {
         public Actor()
         {
-            ActorLikes = new HashSet<ActorLike>();
-            ActorParticipations = new HashSet<ActorParticipation>();
+            UsersLiked = new HashSet<ApplicationUser>();
+            Movies = new HashSet<Movie>();
         }
 
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public virtual ICollection<ActorLike> ActorLikes { get; set; }
-        public virtual ICollection<ActorParticipation> ActorParticipations { get; set; }
+        public virtual ICollection<ApplicationUser> UsersLiked { get; set; }
+        public virtual ICollection<Movie> Movies { get; set; }
     }
 }

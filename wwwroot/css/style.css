@@ -18,7 +18,8 @@ a:active {
 }
 
 .action-label {
-    margin: 0 1em
+    margin: 0 1em;
+    display: inline-block;
 }
 
 .validation {

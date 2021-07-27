@@ -9,8 +9,9 @@ namespace MoviesAspTest.Models
     {
         public Movie()
         {
-            ActorParticipations = new HashSet<ActorParticipation>();
-            MovieLikes = new HashSet<MovieLike>();
+            Actors = new HashSet<Actor>();
+            UsersLiked = new HashSet<ApplicationUser>();
+            Genres = new HashSet<Genre>();
         }
 
         public Guid Id { get; set; }
@@ -19,7 +20,8 @@ namespace MoviesAspTest.Models
         public DateTime? ReleaseDate { get; set; }
         public TimeSpan? Duration { get; set; }
 
-        public virtual ICollection<ActorParticipation> ActorParticipations { get; set; }
-        public virtual ICollection<MovieLike> MovieLikes { get; set; }
+        public virtual ICollection<Actor> Actors { get; set; }
+        public virtual ICollection<ApplicationUser> UsersLiked { get; set; }
+        public virtual ICollection<Genre> Genres { get; set; }
     }
 }

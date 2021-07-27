@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace MoviesAspTest.Enums
 {
@@ -74,11 +75,12 @@ namespace MoviesAspTest.Controllers
 		{
 			using (MoviesTestContext db = new MoviesTestContext())
 			{
-				db.MovieLikes.Add(new MovieLike
-				{
-					UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
-					MovieId = movieId
-				});
+				var user = db.AppUsers
+					.Include(u => u.Movies)
+					.Single(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+				var movie = db.Movies
+					.Single(m => m.Id == movieId);
+				user.Movies.Add(movie);
 				db.SaveChanges();
 			}
 
@@ -90,11 +92,12 @@ namespace MoviesAspTest.Controllers
 		{
 			using (MoviesTestContext db = new MoviesTestContext())
 			{
-				db.MovieLikes.Remove(new MovieLike
-				{
-					UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
-					MovieId = movieId
-				});
+				var user = db.AppUsers
+					.Include(u => u.Movies)
+					.Single(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+				var movie = db.Movies
+					.Single(m => m.Id == movieId);
+				user.Movies.Remove(movie);
 				db.SaveChanges();
 			}
 
@@ -106,11 +109,12 @@ namespace MoviesAspTest.Controllers
 		{
 			using (MoviesTestContext db = new MoviesTestContext())
 			{
-				db.ActorLikes.Add(new ActorLike
-				{
-					UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
-					ActorId = actorId
-				});
+				var user = db.AppUsers
+					.Include(u => u.Actors)
+					.Single(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+				var actor = db.Actors
+					.Single(a => a.Id == actorId);
+				user.Actors.Add(actor);
 				db.SaveChanges();
 			}
 
@@ -122,11 +126,12 @@ namespace MoviesAspTest.Controllers
 		{
 			using (MoviesTestContext db = new MoviesTestContext())
 			{
-				db.ActorLikes.Remove(new ActorLike
-				{
-					UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
-					ActorId = actorId
-				});
+				var user = db.AppUsers
+					.Include(u => u.Actors)
+					.Single(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+				var actor = db.Actors
+					.Single(a => a.Id == actorId);
+				user.Actors.Remove(actor);
 				db.SaveChanges();
 			}
 
@@ -137,8 +142,9 @@ namespace MoviesAspTest.Controllers
 		{
 			using (MoviesTestContext db = new MoviesTestContext())
 			{
-				return db.Movies.Include(m => m.MovieLikes)
-					.Include(m => m.ActorParticipations)
+				return db.Movies.Include(m => m.UsersLiked)
+					.Include(m => m.Actors)
+					.Include(m => m.Genres)
 					.First(m => m.Id == movieId);
 			}
 		}
@@ -155,8 +161,8 @@ namespace MoviesAspTest.Controllers
 		{
 			using (MoviesTestContext db = new MoviesTestContext())
 			{
-				return db.Actors.Include(a => a.ActorLikes)
-					.Include(a => a.ActorParticipations)
+				return db.Actors.Include(a => a.UsersLiked)
+					.Include(a => a.Movies)
 					.First(a => a.Id == actorId);
 			}
 		}
@@ -173,7 +179,7 @@ namespace MoviesAspTest.Controllers
 		{
 			using (MoviesTestContext db = new MoviesTestContext())
 			{
-				return db.Movies.OrderBy(m => m.Name).ToList();
+				return db.Movies.OrderBy(m => m.Name).Include(m => m.UsersLiked).ToList();
 			}
 		}
 
@@ -181,7 +187,7 @@ namespace MoviesAspTest.Controllers
 		{
 			using (MoviesTestContext db = new MoviesTestContext())
 			{
-				return db.Movies.OrderByDescending(m => m.ReleaseDate).ToList();
+				return db.Movies.OrderByDescending(m => m.ReleaseDate).Include(m => m.UsersLiked).ToList();
 			}
 		}
 
@@ -189,7 +195,7 @@ namespace MoviesAspTest.Controllers
 		{
 			using (MoviesTestContext db = new MoviesTestContext())
 			{
-				return db.Movies.OrderByDescending(m => m.MovieLikes.Count).ToList();
+				return db.Movies.OrderByDescending(m => m.UsersLiked.Count).Include(m => m.UsersLiked).ToList();
 			}
 		}
 
@@ -197,7 +203,7 @@ namespace MoviesAspTest.Controllers
 		{
 			using (MoviesTestContext db = new MoviesTestContext())
 			{
-				return db.Actors.OrderByDescending(a => a.ActorLikes.Count).ToList();
+				return db.Actors.OrderByDescending(a => a.UsersLiked.Count).Include(a => a.UsersLiked).ToList();
 			}
 		}
 
@@ -205,7 +211,7 @@ namespace MoviesAspTest.Controllers
 		{
 			using (MoviesTestContext db = new MoviesTestContext())
 			{
-				return db.Movies.Where(m => m.ActorParticipations.Any(ap => ap.ActorId == actorId)).ToList();
+				return db.Movies.Where(m => m.Actors.Any(a => a.Id == actorId)).Include(m => m.UsersLiked).ToList();
 			}
 		}
 
@@ -213,8 +219,9 @@ namespace MoviesAspTest.Controllers
 		{
 			using (MoviesTestContext db = new MoviesTestContext())
 			{
-				return db.MovieLikes.Where(ml => ml.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).
-					Select(ml => ml.MovieId).ToList();
+				return db.Movies.Where(m =>
+						m.UsersLiked.Any(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier)))
+					.Select(m => m.Id).ToList();
 			}
 		}
 
@@ -222,8 +229,9 @@ namespace MoviesAspTest.Controllers
 		{
 			using (MoviesTestContext db = new MoviesTestContext())
 			{
-				return db.ActorLikes.Where(al => al.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier))
-					.Select(al => al.ActorId).ToList();
+				return db.Actors.Where(a =>
+						a.UsersLiked.Any(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier)))
+					.Select(a => a.Id).ToList();
 			}
 		}
 	}

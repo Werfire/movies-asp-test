@@ -10,8 +10,8 @@ using MoviesAspTest.Models;
 namespace MoviesAspTest.Migrations
 {
     [DbContext(typeof(MoviesTestContext))]
-    [Migration("20210725232016_UserClassExtension")]
-    partial class UserClassExtension
+    [Migration("20210726144543_CascadeDeleteAndSeedRemainingData")]
+    partial class CascadeDeleteAndSeedRemainingData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -71,6 +71,77 @@ namespace MoviesAspTest.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -173,24 +244,63 @@ namespace MoviesAspTest.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Actor");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("98310d45-71d9-4074-9eb1-6685d3e812af"),
+                            Description = "Russian television host, presenter, actor, musician and producer.",
+                            Name = "Ivan Urgant"
+                        },
+                        new
+                        {
+                            Id = new Guid("32719add-dd52-4b0a-85af-a9ac5e6683ac"),
+                            Description = "Russian comedian, film and television actor, TV host, producer, screenwriter.",
+                            Name = "Sergei Svetlakov"
+                        },
+                        new
+                        {
+                            Id = new Guid("37c43778-09c9-4384-9b3a-12319eb2a29c"),
+                            Description = "American actor and producer.",
+                            Name = "Matthew McConaughey"
+                        },
+                        new
+                        {
+                            Id = new Guid("21dd2c0a-bcb7-4462-825f-4645d8b4fabf"),
+                            Description = "American actor and filmmaker.",
+                            Name = "Vin Diesel"
+                        },
+                        new
+                        {
+                            Id = new Guid("5660ebcd-2f62-484b-a3de-9c3aae6e5c2d"),
+                            Description = "American actor, comedian, writer, producer, and singer.",
+                            Name = "Eddie Murphy"
+                        },
+                        new
+                        {
+                            Id = new Guid("a33ae310-9b7c-40ae-9b90-0d5080ab308a"),
+                            Description = "American actor, voice actor, and writer.",
+                            Name = "Mark Hamill"
+                        },
+                        new
+                        {
+                            Id = new Guid("0b401827-f9aa-441d-b075-b617d2e46d87"),
+                            Description = "American actor, pilot, and environmental activist.",
+                            Name = "Harrison Ford"
+                        });
                 });
 
             modelBuilder.Entity("MoviesAspTest.Models.ActorLike", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("ActorId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("UserId", "ActorId");
 
                     b.HasIndex("ActorId");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("ActorLike");
                 });
@@ -205,74 +315,61 @@ namespace MoviesAspTest.Migrations
 
                     b.HasKey("MovieId", "ActorId");
 
-                    b.HasIndex("ActorId");
+                    b.HasIndex(new[] { "ActorId" }, "IX_ActorParticipation_ActorId");
 
                     b.ToTable("ActorParticipation");
-                });
 
-            modelBuilder.Entity("MoviesAspTest.Models.ApplicationUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers");
+                    b.HasData(
+                        new
+                        {
+                            MovieId = new Guid("11d7acef-a535-42aa-9087-88e227e056d5"),
+                            ActorId = new Guid("98310d45-71d9-4074-9eb1-6685d3e812af")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("9e8ccaf1-4e28-421f-bb8d-a62edd9de82d"),
+                            ActorId = new Guid("98310d45-71d9-4074-9eb1-6685d3e812af")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("11d7acef-a535-42aa-9087-88e227e056d5"),
+                            ActorId = new Guid("32719add-dd52-4b0a-85af-a9ac5e6683ac")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("9e8ccaf1-4e28-421f-bb8d-a62edd9de82d"),
+                            ActorId = new Guid("32719add-dd52-4b0a-85af-a9ac5e6683ac")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("9177f1ec-3d57-41d8-ae30-be6c67878f71"),
+                            ActorId = new Guid("37c43778-09c9-4384-9b3a-12319eb2a29c")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("741f1f1b-90d7-4a84-bc77-1ebbf9ff6aa7"),
+                            ActorId = new Guid("37c43778-09c9-4384-9b3a-12319eb2a29c")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("0b51a839-20ea-462a-acab-56ed45276f57"),
+                            ActorId = new Guid("21dd2c0a-bcb7-4462-825f-4645d8b4fabf")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("49264b49-7514-4691-bc58-80afad1ababb"),
+                            ActorId = new Guid("5660ebcd-2f62-484b-a3de-9c3aae6e5c2d")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("45a1cccb-afa2-4295-a9b2-51f5883b0c1f"),
+                            ActorId = new Guid("a33ae310-9b7c-40ae-9b90-0d5080ab308a")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("45a1cccb-afa2-4295-a9b2-51f5883b0c1f"),
+                            ActorId = new Guid("0b401827-f9aa-441d-b075-b617d2e46d87")
+                        });
                 });
 
             modelBuilder.Entity("MoviesAspTest.Models.Genre", b =>
@@ -290,6 +387,43 @@ namespace MoviesAspTest.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Genre");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("a2822920-ec5a-4ec8-86b1-fe3e0cc8db3e"),
+                            Name = "Comedy"
+                        },
+                        new
+                        {
+                            Id = new Guid("301af3bb-4f23-4a0e-88cf-308eeb6849dd"),
+                            Name = "Sci-fi"
+                        },
+                        new
+                        {
+                            Id = new Guid("61b3c6fb-80e7-469d-812c-bebf1caa73fe"),
+                            Name = "Drama"
+                        },
+                        new
+                        {
+                            Id = new Guid("a1d0e17a-7c53-4acb-bde3-b386ed43afb4"),
+                            Name = "Action"
+                        },
+                        new
+                        {
+                            Id = new Guid("41784ed0-1dab-466d-bfcf-d30b90c40734"),
+                            Name = "Animation"
+                        },
+                        new
+                        {
+                            Id = new Guid("e1d7a7a1-6ec6-4824-bdf2-03dc8c5f9dfe"),
+                            Name = "Adventure"
+                        },
+                        new
+                        {
+                            Id = new Guid("36fd0bfa-0df7-4b90-9668-744c0982f035"),
+                            Name = "Detective"
+                        });
                 });
 
             modelBuilder.Entity("MoviesAspTest.Models.Movie", b =>
@@ -321,7 +455,7 @@ namespace MoviesAspTest.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("abd0bb12-c5e3-44ce-8d43-e41cde33e9f1"),
+                            Id = new Guid("9177f1ec-3d57-41d8-ae30-be6c67878f71"),
                             Description = "Epic science fiction film co-written, directed and produced by Christopher Nolan.",
                             Duration = new TimeSpan(0, 2, 49, 0, 0),
                             Name = "Interstellar",
@@ -329,7 +463,7 @@ namespace MoviesAspTest.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b8e8a660-35d9-46f3-a506-9a27332b9bd4"),
+                            Id = new Guid("0b51a839-20ea-462a-acab-56ed45276f57"),
                             Description = "American action film directed by Justin Lin from a screenplay by Daniel Casey and Lin.",
                             Duration = new TimeSpan(0, 2, 23, 0, 0),
                             Name = "Fast & Furious 9",
@@ -337,7 +471,7 @@ namespace MoviesAspTest.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d8e92340-8d65-4b38-a39f-c55c43eaf41e"),
+                            Id = new Guid("11d7acef-a535-42aa-9087-88e227e056d5"),
                             Description = "Russian comedy film, sequel to Yolki.",
                             Duration = new TimeSpan(0, 1, 40, 0, 0),
                             Name = "Yolki 2",
@@ -345,7 +479,7 @@ namespace MoviesAspTest.Migrations
                         },
                         new
                         {
-                            Id = new Guid("3e021d1e-a7b2-41ae-a48b-b4ff2a827ea2"),
+                            Id = new Guid("741f1f1b-90d7-4a84-bc77-1ebbf9ff6aa7"),
                             Description = "American science fantasy Western action film directed and co-written by Nikolaj Arcel.",
                             Duration = new TimeSpan(0, 1, 35, 0, 0),
                             Name = "The Dark Tower",
@@ -353,7 +487,7 @@ namespace MoviesAspTest.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c1f719a4-8e58-4977-ba86-2963120e8476"),
+                            Id = new Guid("49264b49-7514-4691-bc58-80afad1ababb"),
                             Description = "American computer-animated comedy film loosely based on the 1990 picture book Shrek! by William Steig.",
                             Duration = new TimeSpan(0, 1, 32, 0, 0),
                             Name = "Shrek 2",
@@ -361,7 +495,7 @@ namespace MoviesAspTest.Migrations
                         },
                         new
                         {
-                            Id = new Guid("87cae8cb-eedc-431f-9f98-01670bc0b700"),
+                            Id = new Guid("9e8ccaf1-4e28-421f-bb8d-a62edd9de82d"),
                             Description = "Russian comedy film. It is a prequel to the 2013 film Yolki 3.",
                             Duration = new TimeSpan(0, 1, 49, 0, 0),
                             Name = "Yolki 1914",
@@ -369,7 +503,7 @@ namespace MoviesAspTest.Migrations
                         },
                         new
                         {
-                            Id = new Guid("56d06a9b-195f-4693-aa95-081e75495c47"),
+                            Id = new Guid("45a1cccb-afa2-4295-a9b2-51f5883b0c1f"),
                             Description = "American epic space-opera film written and directed by George Lucas, produced by Lucasfilm and distributed by 20th Century Fox.",
                             Duration = new TimeSpan(0, 2, 1, 0, 0),
                             Name = "Star Wars IV",
@@ -387,44 +521,118 @@ namespace MoviesAspTest.Migrations
 
                     b.HasKey("MovieId", "GenreId");
 
+                    b.HasIndex("GenreId");
+
                     b.ToTable("MovieGenreJunction");
+
+                    b.HasData(
+                        new
+                        {
+                            MovieId = new Guid("9177f1ec-3d57-41d8-ae30-be6c67878f71"),
+                            GenreId = new Guid("301af3bb-4f23-4a0e-88cf-308eeb6849dd")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("9177f1ec-3d57-41d8-ae30-be6c67878f71"),
+                            GenreId = new Guid("61b3c6fb-80e7-469d-812c-bebf1caa73fe")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("9177f1ec-3d57-41d8-ae30-be6c67878f71"),
+                            GenreId = new Guid("e1d7a7a1-6ec6-4824-bdf2-03dc8c5f9dfe")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("9177f1ec-3d57-41d8-ae30-be6c67878f71"),
+                            GenreId = new Guid("36fd0bfa-0df7-4b90-9668-744c0982f035")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("0b51a839-20ea-462a-acab-56ed45276f57"),
+                            GenreId = new Guid("a1d0e17a-7c53-4acb-bde3-b386ed43afb4")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("0b51a839-20ea-462a-acab-56ed45276f57"),
+                            GenreId = new Guid("e1d7a7a1-6ec6-4824-bdf2-03dc8c5f9dfe")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("11d7acef-a535-42aa-9087-88e227e056d5"),
+                            GenreId = new Guid("a2822920-ec5a-4ec8-86b1-fe3e0cc8db3e")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("741f1f1b-90d7-4a84-bc77-1ebbf9ff6aa7"),
+                            GenreId = new Guid("e1d7a7a1-6ec6-4824-bdf2-03dc8c5f9dfe")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("741f1f1b-90d7-4a84-bc77-1ebbf9ff6aa7"),
+                            GenreId = new Guid("a1d0e17a-7c53-4acb-bde3-b386ed43afb4")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("741f1f1b-90d7-4a84-bc77-1ebbf9ff6aa7"),
+                            GenreId = new Guid("301af3bb-4f23-4a0e-88cf-308eeb6849dd")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("49264b49-7514-4691-bc58-80afad1ababb"),
+                            GenreId = new Guid("a2822920-ec5a-4ec8-86b1-fe3e0cc8db3e")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("49264b49-7514-4691-bc58-80afad1ababb"),
+                            GenreId = new Guid("41784ed0-1dab-466d-bfcf-d30b90c40734")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("49264b49-7514-4691-bc58-80afad1ababb"),
+                            GenreId = new Guid("e1d7a7a1-6ec6-4824-bdf2-03dc8c5f9dfe")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("9e8ccaf1-4e28-421f-bb8d-a62edd9de82d"),
+                            GenreId = new Guid("a2822920-ec5a-4ec8-86b1-fe3e0cc8db3e")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("45a1cccb-afa2-4295-a9b2-51f5883b0c1f"),
+                            GenreId = new Guid("301af3bb-4f23-4a0e-88cf-308eeb6849dd")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("45a1cccb-afa2-4295-a9b2-51f5883b0c1f"),
+                            GenreId = new Guid("e1d7a7a1-6ec6-4824-bdf2-03dc8c5f9dfe")
+                        },
+                        new
+                        {
+                            MovieId = new Guid("45a1cccb-afa2-4295-a9b2-51f5883b0c1f"),
+                            GenreId = new Guid("a1d0e17a-7c53-4acb-bde3-b386ed43afb4")
+                        });
                 });
 
             modelBuilder.Entity("MoviesAspTest.Models.MovieLike", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("MovieId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("UserId", "MovieId");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("MovieId");
 
                     b.ToTable("MovieLike");
                 });
 
-            modelBuilder.Entity("MoviesAspTest.Models.User", b =>
+            modelBuilder.Entity("MoviesAspTest.Models.ApplicationUser", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("Login")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User");
+                    b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -438,7 +646,7 @@ namespace MoviesAspTest.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("MoviesAspTest.Models.ApplicationUser", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -447,7 +655,7 @@ namespace MoviesAspTest.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("MoviesAspTest.Models.ApplicationUser", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -462,7 +670,7 @@ namespace MoviesAspTest.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MoviesAspTest.Models.ApplicationUser", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -471,7 +679,7 @@ namespace MoviesAspTest.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("MoviesAspTest.Models.ApplicationUser", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -484,16 +692,14 @@ namespace MoviesAspTest.Migrations
                         .WithMany("ActorLikes")
                         .HasForeignKey("ActorId")
                         .HasConstraintName("FK_ActorLike_Actor")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MoviesAspTest.Models.ApplicationUser", null)
-                        .WithMany("ActorLikes")
-                        .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("MoviesAspTest.Models.User", "User")
+                    b.HasOne("MoviesAspTest.Models.ApplicationUser", "User")
                         .WithMany("ActorLikes")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_ActorLike_User")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Actor");
@@ -507,12 +713,14 @@ namespace MoviesAspTest.Migrations
                         .WithMany("ActorParticipations")
                         .HasForeignKey("ActorId")
                         .HasConstraintName("FK_ActorParticipation_Actor")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MoviesAspTest.Models.Movie", "Movie")
                         .WithMany("ActorParticipations")
                         .HasForeignKey("MovieId")
                         .HasConstraintName("FK_ActorParticipation_Movie")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Actor");
@@ -520,22 +728,41 @@ namespace MoviesAspTest.Migrations
                     b.Navigation("Movie");
                 });
 
+            modelBuilder.Entity("MoviesAspTest.Models.MovieGenreJunction", b =>
+                {
+                    b.HasOne("MoviesAspTest.Models.Genre", "Genre")
+                        .WithMany("MovieGenreJunctions")
+                        .HasForeignKey("GenreId")
+                        .HasConstraintName("FK_MovieGenreJunction_Genre")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MoviesAspTest.Models.Movie", "Movie")
+                        .WithMany("MovieGenreJunctions")
+                        .HasForeignKey("MovieId")
+                        .HasConstraintName("FK_MovieGenreJunction_Movie")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Genre");
+
+                    b.Navigation("Movie");
+                });
+
             modelBuilder.Entity("MoviesAspTest.Models.MovieLike", b =>
                 {
-                    b.HasOne("MoviesAspTest.Models.ApplicationUser", null)
-                        .WithMany("MovieLikes")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("MoviesAspTest.Models.Movie", "Movie")
                         .WithMany("MovieLikes")
                         .HasForeignKey("MovieId")
                         .HasConstraintName("FK_MovieLike_Movie")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MoviesAspTest.Models.User", "User")
+                    b.HasOne("MoviesAspTest.Models.ApplicationUser", "User")
                         .WithMany("MovieLikes")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_MovieLike_User")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Movie");
@@ -550,21 +777,21 @@ namespace MoviesAspTest.Migrations
                     b.Navigation("ActorParticipations");
                 });
 
-            modelBuilder.Entity("MoviesAspTest.Models.ApplicationUser", b =>
+            modelBuilder.Entity("MoviesAspTest.Models.Genre", b =>
                 {
-                    b.Navigation("ActorLikes");
-
-                    b.Navigation("MovieLikes");
+                    b.Navigation("MovieGenreJunctions");
                 });
 
             modelBuilder.Entity("MoviesAspTest.Models.Movie", b =>
                 {
                     b.Navigation("ActorParticipations");
 
+                    b.Navigation("MovieGenreJunctions");
+
                     b.Navigation("MovieLikes");
                 });
 
-            modelBuilder.Entity("MoviesAspTest.Models.User", b =>
+            modelBuilder.Entity("MoviesAspTest.Models.ApplicationUser", b =>
                 {
                     b.Navigation("ActorLikes");
 
