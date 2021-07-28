@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MoviesAspTest.Migrations
 {
-    public partial class CascadeDeleteAndSeedRemainingData : Migration
+    public partial class JoinTablesAndSeedData : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

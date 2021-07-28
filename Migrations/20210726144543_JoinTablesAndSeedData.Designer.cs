@@ -11,7 +11,7 @@ namespace MoviesAspTest.Migrations
 {
     [DbContext(typeof(MoviesTestContext))]
     [Migration("20210726144543_CascadeDeleteAndSeedRemainingData")]
-    partial class CascadeDeleteAndSeedRemainingData
+    partial class JoinTablesAndSeedData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

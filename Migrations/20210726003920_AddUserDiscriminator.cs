@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MoviesAspTest.Migrations
 {
-    public partial class ApplicationUserLists : Migration
+    public partial class AddUserDiscriminator : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

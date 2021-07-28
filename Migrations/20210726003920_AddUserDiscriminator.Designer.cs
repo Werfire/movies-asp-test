@@ -11,7 +11,7 @@ namespace MoviesAspTest.Migrations
 {
     [DbContext(typeof(MoviesTestContext))]
     [Migration("20210726003920_ApplicationUserLists")]
-    partial class ApplicationUserLists
+    partial class AddUserDiscriminator
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
