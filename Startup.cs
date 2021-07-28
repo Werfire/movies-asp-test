@@ -44,14 +44,17 @@ namespace MoviesAspTest
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
+			app.UseDeveloperExceptionPage();
+
 			if (env.IsDevelopment())
 			{
-				app.UseDeveloperExceptionPage();
+
 			}
 			else
 			{
 				app.UseHsts();
 			}
+
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
 
