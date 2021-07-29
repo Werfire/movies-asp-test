@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MoviesAspTest.Models;
 
 namespace MoviesAspTest
@@ -22,10 +24,9 @@ namespace MoviesAspTest
 
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddDbContext<MoviesTestContext>(options =>
+				options.UseSqlServer(Configuration["ConnectionStrings:MoviesTest"]));
 			services.AddControllersWithViews();
-			services.AddAuthentication("Cookie")
-				.AddCookie("Cookie");
-			services.AddAuthorization();
 			services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 				{
 					options.Password.RequireDigit = false;
@@ -34,21 +35,20 @@ namespace MoviesAspTest
 					options.Password.RequireNonAlphanumeric = false;
 				})
 				.AddEntityFrameworkStores<MoviesTestContext>();
+			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+				.AddCookie();
 			services.ConfigureApplicationCookie(options =>
 			{
 				options.LoginPath = new PathString("/User/SignIn");
 			});
-
-			services.AddTransient<MoviesTestContext>();
+			services.AddAuthorization();
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
-			app.UseDeveloperExceptionPage();
-
 			if (env.IsDevelopment())
 			{
-
+				app.UseDeveloperExceptionPage();
 			}
 			else
 			{
@@ -57,7 +57,7 @@ namespace MoviesAspTest
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
-
+			
 			app.UseRouting();
 
 			app.UseAuthentication();

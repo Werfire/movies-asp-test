@@ -1,14 +1,13 @@
-﻿using System;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MoviesAspTest.Enums;
 using MoviesAspTest.Models;
 using MoviesAspTest.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 
 namespace MoviesAspTest.Enums
 {
@@ -23,6 +22,13 @@ namespace MoviesAspTest.Controllers
 {
 	public class MoviesActorsController : Controller
 	{
+		private readonly MoviesTestContext db;
+
+		public MoviesActorsController(MoviesTestContext dbContext)
+		{
+			db = dbContext;
+		}
+
 		public ActionResult Index(MoviesActorsAction _action = MoviesActorsAction.None, Guid movieId = new(), Guid actorId = new())
 		{
 			MoviesActorsViewModel model = new MoviesActorsViewModel {ActionName = _action};
@@ -73,16 +79,13 @@ namespace MoviesAspTest.Controllers
 		[Authorize]
 		public ActionResult LikeMovie(Guid movieId)
 		{
-			using (MoviesTestContext db = new MoviesTestContext())
-			{
-				var user = db.AppUsers
-					.Include(u => u.Movies)
-					.Single(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-				var movie = db.Movies
-					.Single(m => m.Id == movieId);
-				user.Movies.Add(movie);
-				db.SaveChanges();
-			}
+			var user = db.AppUsers
+				.Include(u => u.Movies)
+				.Single(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+			var movie = db.Movies
+				.Single(m => m.Id == movieId);
+			user.Movies.Add(movie);
+			db.SaveChanges();
 
 			return View("Index", new MoviesActorsViewModel());
 		}
@@ -90,16 +93,13 @@ namespace MoviesAspTest.Controllers
 		[Authorize]
 		public ActionResult UnlikeMovie(Guid movieId)
 		{
-			using (MoviesTestContext db = new MoviesTestContext())
-			{
-				var user = db.AppUsers
-					.Include(u => u.Movies)
-					.Single(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-				var movie = db.Movies
-					.Single(m => m.Id == movieId);
-				user.Movies.Remove(movie);
-				db.SaveChanges();
-			}
+			var user = db.AppUsers
+				.Include(u => u.Movies)
+				.Single(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+			var movie = db.Movies
+				.Single(m => m.Id == movieId);
+			user.Movies.Remove(movie);
+			db.SaveChanges();
 
 			return View("Index", new MoviesActorsViewModel());
 		}
@@ -107,16 +107,13 @@ namespace MoviesAspTest.Controllers
 		[Authorize]
 		public ActionResult LikeActor(Guid actorId)
 		{
-			using (MoviesTestContext db = new MoviesTestContext())
-			{
-				var user = db.AppUsers
-					.Include(u => u.Actors)
-					.Single(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-				var actor = db.Actors
-					.Single(a => a.Id == actorId);
-				user.Actors.Add(actor);
-				db.SaveChanges();
-			}
+			var user = db.AppUsers
+				.Include(u => u.Actors)
+				.Single(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+			var actor = db.Actors
+				.Single(a => a.Id == actorId);
+			user.Actors.Add(actor);
+			db.SaveChanges();
 
 			return View("Index", new MoviesActorsViewModel());
 		}
@@ -124,115 +121,79 @@ namespace MoviesAspTest.Controllers
 		[Authorize]
 		public ActionResult UnlikeActor(Guid actorId)
 		{
-			using (MoviesTestContext db = new MoviesTestContext())
-			{
-				var user = db.AppUsers
-					.Include(u => u.Actors)
-					.Single(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-				var actor = db.Actors
-					.Single(a => a.Id == actorId);
-				user.Actors.Remove(actor);
-				db.SaveChanges();
-			}
+			var user = db.AppUsers
+				.Include(u => u.Actors)
+				.Single(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+			var actor = db.Actors
+				.Single(a => a.Id == actorId);
+			user.Actors.Remove(actor);
+			db.SaveChanges();
 
 			return View("Index", new MoviesActorsViewModel());
 		}
 
 		private Movie GetMovie(Guid movieId)
 		{
-			using (MoviesTestContext db = new MoviesTestContext())
-			{
-				return db.Movies.Include(m => m.UsersLiked)
-					.Include(m => m.Actors)
-					.Include(m => m.Genres)
-					.First(m => m.Id == movieId);
-			}
+			return db.Movies.Include(m => m.UsersLiked)
+				.Include(m => m.Actors)
+				.Include(m => m.Genres)
+				.First(m => m.Id == movieId);
 		}
 
 		private Movie LightGetMovie(Guid movieId)
 		{
-			using (MoviesTestContext db = new MoviesTestContext())
-			{
-				return db.Movies.First(m => m.Id == movieId);
-			}
+			return db.Movies.First(m => m.Id == movieId);
 		}
 
 		private Actor GetActor(Guid actorId)
 		{
-			using (MoviesTestContext db = new MoviesTestContext())
-			{
-				return db.Actors.Include(a => a.UsersLiked)
-					.Include(a => a.Movies)
-					.First(a => a.Id == actorId);
-			}
+			return db.Actors.Include(a => a.UsersLiked)
+				.Include(a => a.Movies)
+				.First(a => a.Id == actorId);
 		}
 
 		private Actor LightGetActor(Guid actorId)
 		{
-			using (MoviesTestContext db = new MoviesTestContext())
-			{
-				return db.Actors.First(a => a.Id == actorId);
-			}
+			return db.Actors.First(a => a.Id == actorId);
 		}
 
 		private List<Movie> GetMoviesByName()
 		{
-			using (MoviesTestContext db = new MoviesTestContext())
-			{
-				return db.Movies.OrderBy(m => m.Name).Include(m => m.UsersLiked).ToList();
-			}
+			return db.Movies.OrderBy(m => m.Name).Include(m => m.UsersLiked).ToList();
 		}
 
 		private List<Movie> GetMoviesByReleaseDate()
 		{
-			using (MoviesTestContext db = new MoviesTestContext())
-			{
-				return db.Movies.OrderByDescending(m => m.ReleaseDate).Include(m => m.UsersLiked).ToList();
-			}
+			return db.Movies.OrderByDescending(m => m.ReleaseDate).Include(m => m.UsersLiked).ToList();
 		}
 
 		private List<Movie> GetMoviesByLikes()
 		{
-			using (MoviesTestContext db = new MoviesTestContext())
-			{
-				return db.Movies.OrderByDescending(m => m.UsersLiked.Count).Include(m => m.UsersLiked).ToList();
-			}
+			return db.Movies.OrderByDescending(m => m.UsersLiked.Count).Include(m => m.UsersLiked).ToList();
 		}
 
 		private List<Actor> GetActorsByLikes()
 		{
-			using (MoviesTestContext db = new MoviesTestContext())
-			{
-				return db.Actors.OrderByDescending(a => a.UsersLiked.Count).Include(a => a.UsersLiked).ToList();
-			}
+			return db.Actors.OrderByDescending(a => a.UsersLiked.Count).Include(a => a.UsersLiked).ToList();
 		}
 
 		private List<Movie> GetMoviesWithActor(Guid actorId)
 		{
-			using (MoviesTestContext db = new MoviesTestContext())
-			{
-				return db.Movies.Where(m => m.Actors.Any(a => a.Id == actorId)).Include(m => m.UsersLiked).ToList();
-			}
+			return db.Movies.Where(m => m.Actors.Any(a => a.Id == actorId)).Include(m => m.UsersLiked).ToList();
 		}
 
 		private List<Guid> GetUserLikedMoviesIds()
 		{
-			using (MoviesTestContext db = new MoviesTestContext())
-			{
-				return db.Movies.Where(m =>
-						m.UsersLiked.Any(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier)))
-					.Select(m => m.Id).ToList();
-			}
+			return db.Movies.Where(m =>
+					m.UsersLiked.Any(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier)))
+				.Select(m => m.Id).ToList();
 		}
 
 		private List<Guid> GetUserLikedActorsIds()
 		{
-			using (MoviesTestContext db = new MoviesTestContext())
-			{
-				return db.Actors.Where(a =>
-						a.UsersLiked.Any(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier)))
-					.Select(a => a.Id).ToList();
-			}
+			return db.Actors.Where(a =>
+					a.UsersLiked.Any(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier)))
+				.Select(a => a.Id).ToList();
 		}
 	}
 }
